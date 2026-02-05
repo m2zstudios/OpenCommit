@@ -14,6 +14,9 @@ const CommitForm = ({ onSubmit, isSubmitting }) => {
   return (
     <form className="card" onSubmit={handleSubmit}>
       <h2 style={{ marginTop: 0 }}>Create a new commit</h2>
+      <p className="muted">
+        Commits are append-only. Once published, they can never be edited or deleted.
+      </p>
       {/* Content becomes part of the hash chain, so users must be deliberate. */}
       <label style={{ display: 'block', marginBottom: '12px' }}>
         Commit text

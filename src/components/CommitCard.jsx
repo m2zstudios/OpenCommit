@@ -23,9 +23,17 @@ const CommitCard = ({ commit }) => {
               </span>
             )}
           </div>
+          {commit.authorHeadline && <div className="muted">{commit.authorHeadline}</div>}
+          {commit.authorLocation && <div className="muted">{commit.authorLocation}</div>}
           <div className="muted">{createdAt}</div>
         </div>
       </div>
+
+      {commit.authorBio && (
+        <p className="muted" style={{ marginTop: '12px' }}>
+          {commit.authorBio}
+        </p>
+      )}
 
       {/* Content and tag are immutable once written. */}
       <p style={{ marginTop: '16px', marginBottom: '12px', whiteSpace: 'pre-wrap' }}>
@@ -38,6 +46,21 @@ const CommitCard = ({ commit }) => {
           {commit.commitHash}
         </span>
       </div>
+
+      {Array.isArray(commit.authorSocials) && commit.authorSocials.length > 0 && (
+        <div style={{ marginTop: '12px' }}>
+          <div className="muted">Social links</div>
+          <ul className="social-list">
+            {commit.authorSocials.map((link) => (
+              <li key={link}>
+                <a href={link} target="_blank" rel="noreferrer">
+                  {link}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </article>
   );
 };

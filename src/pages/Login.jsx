@@ -26,6 +26,9 @@ const Login = ({ onLogin }) => {
   return (
     <form className="card" onSubmit={handleSubmit}>
       <h2 style={{ marginTop: 0 }}>Login</h2>
+      <p className="muted">
+        Verified badges are reserved for the official OpenCommit account.
+      </p>
       <label style={{ display: 'block', marginBottom: '12px' }}>
         Email
         <input

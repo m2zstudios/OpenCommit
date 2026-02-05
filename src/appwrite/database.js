@@ -1,13 +1,16 @@
 // Database helper functions for OpenCommit.
 // All write operations are CREATE-only to preserve the immutable commit chain.
-import { Databases, ID, Query } from 'appwrite';
+import { Databases, Functions, ID, Query } from 'appwrite';
 import client from './client';
 import { generateCommitHash } from '../utils/hash';
 
 const databases = new Databases(client);
+const functions = new Functions(client);
 
 const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const commitsCollectionId = import.meta.env.VITE_APPWRITE_COMMITS_COLLECTION_ID;
+const commitFunctionId = import.meta.env.VITE_APPWRITE_COMMIT_FUNCTION_ID;
+const verifiedUserId = import.meta.env.VITE_VERIFIED_USER_ID;
 
 export const listCommits = async () => {
   // The feed is ordered in reverse chronological order for the public timeline.
@@ -30,12 +33,39 @@ export const createCommit = async ({
   authorId,
   authorName,
   authorAvatar,
-  verified,
+  authorBio,
+  authorHeadline,
+  authorLocation,
+  authorSocials,
   content,
   tag,
 }) => {
-  // WARNING: For strict immutability, the hash must be generated using a server timestamp.
-  // In production, move this logic into an Appwrite Function so createdAt is server-derived.
+  // Only the configured verified user ID is allowed to set verified to true.
+  const verified = Boolean(verifiedUserId && authorId === verifiedUserId);
+
+  // Strict immutability requires server timestamps and hashing.
+  // If a function is configured, delegate commit creation to the server.
+  if (commitFunctionId) {
+    const execution = await functions.createExecution(
+      commitFunctionId,
+      JSON.stringify({
+        authorId,
+        authorName,
+        authorAvatar,
+        authorBio,
+        authorHeadline,
+        authorLocation,
+        authorSocials,
+        verified,
+        content,
+        tag,
+      })
+    );
+    return JSON.parse(execution.response);
+  }
+
+  // Fallback for local development when no function is configured.
+  // WARNING: This uses a client timestamp and should not be used in production.
   const previousCommit = await getLatestCommit();
   const previousCommitHash = previousCommit?.commitHash || null;
   const createdAt = new Date().toISOString();
@@ -50,6 +80,10 @@ export const createCommit = async ({
       authorId,
       authorName,
       authorAvatar,
+      authorBio,
+      authorHeadline,
+      authorLocation,
+      authorSocials,
       verified,
       content,
       tag,

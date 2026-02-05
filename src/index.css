@@ -46,7 +46,7 @@ textarea {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -93,4 +93,61 @@ textarea {
 
 .muted {
   color: #71767b;
+}
+
+/* Two-column layout keeps creation and feed separate for clarity. */
+.feed-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.feed-column {
+  min-width: 0;
+}
+
+/* Social links appear in profiles and commit cards. */
+.social-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 6px;
+}
+
+.social-list a {
+  color: #1d9bf0;
+  word-break: break-word;
+}
+
+/* Pricing area uses a simple grid for tier comparison. */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.pricing-card {
+  border: 1px solid #2f3336;
+  border-radius: 16px;
+  padding: 16px;
+  background: #0b0b0b;
+}
+
+.pricing-card.highlight {
+  border-color: #1d9bf0;
+  box-shadow: 0 0 0 1px rgba(29, 155, 240, 0.3);
+}
+
+.pricing-card ul {
+  padding-left: 18px;
+}
+
+@media (max-width: 900px) {
+  /* On small screens, stack the creation and feed sections. */
+  .feed-layout {
+    grid-template-columns: 1fr;
+  }
 }

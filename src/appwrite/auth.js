@@ -24,3 +24,8 @@ export const getCurrentUser = () => {
   // Current user info powers the author profile on commit cards.
   return account.get();
 };
+
+export const updateUserPrefs = (prefs) => {
+  // User preferences store avatar, bio, and social links for richer profiles.
+  return account.updatePrefs(prefs);
+};
